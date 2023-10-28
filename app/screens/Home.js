@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useAuth } from "../context/AuthContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import CameraComp from "../../components/CameraComp";
 
 
 
@@ -22,6 +23,7 @@ const Home = ({ navigation }) => {
 
   return (
     <React.Fragment>
+       {/* <CameraComp/> */}
       <View style={styles.welcome}>
         <View style={styles.welcomeBg} />
         <View style={styles.welcomeMain}>
@@ -37,6 +39,7 @@ const Home = ({ navigation }) => {
                     resizeMode="contain"
                   />
                   <Text style={styles.welcomeText}>Welcome!</Text>
+               
                 </View>
               </View>
             </ScrollView>
