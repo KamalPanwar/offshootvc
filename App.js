@@ -21,6 +21,11 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors } from "./utils/colors";
 import TracedCollection from "./app/screens/TracedCollection";
 import UntracableCollection from "./app/screens/UntracableCollection";
+import MapScreen from "./app/screens/MapScreen";
+import MyRoute from "./app/screens/MyRoute";
+import { ApiProvider } from "./app/context/ApiContext";
+
+
 const Drawer = createDrawerNavigator();
 const stack = createNativeStackNavigator();
 
@@ -127,6 +132,8 @@ export const Layout = () => {
             <stack.Screen name="Profile" component={Profile}></stack.Screen>
             <stack.Screen name="Traced Collection" component={TracedCollection}></stack.Screen>
             <stack.Screen name="Untracable Collection" component={UntracableCollection}></stack.Screen>
+            <stack.Screen name="Map Screen" component={MapScreen}></stack.Screen>
+            <stack.Screen name="My Route" component={MyRoute}></stack.Screen>
             <stack.Screen 
               name="bottom Drawer"
               component={BottomTab}
@@ -150,7 +157,10 @@ export const Layout = () => {
 export default function App() {
   return (
     <AuthProvider>
+      <ApiProvider>
+
       <Layout />
+      </ApiProvider>
     </AuthProvider>
   );
 }

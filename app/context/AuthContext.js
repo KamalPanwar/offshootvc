@@ -11,6 +11,7 @@ const AuthProps = {
 
 const TOKEN_KEY = "MY_JWT";
 export const API_URL = 'https://pg-api-45dn.onrender.com';
+
 const AuthContext = createContext(AuthProps);
 
 export const useAuth = () => {
@@ -57,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   try {
 
     const response = await axios.post(`${API_URL}/login`, { email:email, password:password });
-    console.log("file:Authcontext line 32-login", response);
+    console.log("file:Authcontext line 60-login", response);
     setAuthState({
       token: response.data.token,
       authenticated: true,

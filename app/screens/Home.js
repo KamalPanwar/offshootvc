@@ -20,6 +20,10 @@ const Home = ({ navigation }) => {
   const { authState, onLogout } = useAuth();
   const [ip, setIP] = useState();
 
+  function handleMapScreen(){
+    navigation.navigate("Map Screen")
+  }
+
 
   return (
     <React.Fragment>
@@ -39,7 +43,8 @@ const Home = ({ navigation }) => {
                     resizeMode="contain"
                   />
                   <Text style={styles.welcomeText}>Welcome!</Text>
-               
+                  <Button title="Make my route" onPress={()=>navigation.navigate("Map Screen")}/>
+                  <Button title="My Route" onPress={()=>navigation.navigate("My Route")}/>
                 </View>
               </View>
             </ScrollView>
