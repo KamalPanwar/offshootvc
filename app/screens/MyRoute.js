@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, StatusBar } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { ApiContext } from "../context/ApiContext";
+import Constants from "expo-constants";
 
 const MyRoute = ({ route }) => {
   const [listData, setListData] = useState([]);
@@ -17,27 +18,69 @@ const MyRoute = ({ route }) => {
     });
     setListData(filteredData);
   }
-  console.log(listData);
+
   return (
-    <View>
-      <Text>MyRoute</Text>
+    <SafeAreaView style={styles.container}>
       {listData.map((item, index) => {
         return (
-          <>
-            <View key={index}>
+          <View key={index} style={styles.mainCard}>
+            <View style={styles.indexContainer}>
+
+            <Text style={{fontSize:30,color:"red"}}>{index}</Text>
+            </View>
+            <View>
               <Text>
-                {index} Customer Name: {item.customername} Loan No:{" "}
+                <Text style={{ fontWeight: 700 }}>Customer Name:</Text>
+                {item.customername}
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: 700 }}>Loan No: </Text>
                 {item.loancardaccountno}
               </Text>
-              {/* <Text>Loan No: {item.loancardaccountno}</Text> */}
+              <Text>
+                <Text style={{ fontWeight: 700 }}>Address : </Text>
+                {item.pickupaddress1}
+              </Text>
             </View>
-          </>
+          </View>
         );
       })}
-    </View>
+    </SafeAreaView>
   );
 };
 
 export default MyRoute;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: Constants.statusBarHeight,
+    padding: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    ...Platform.select({
+      ios: {
+        width: "80%", // Reduce container width on iOS
+        alignSelf: "center", // Center the container on iOS
+      },
+    }),
+  },
+  mainCard: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: 10,
+  },
+  indexContainer:{
+   
+    width:"95%"
+  },
+ 
+});

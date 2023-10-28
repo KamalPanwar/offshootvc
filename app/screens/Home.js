@@ -44,7 +44,6 @@ const Home = ({ navigation }) => {
                   />
                   <Text style={styles.welcomeText}>Welcome!</Text>
                   <Button title="Make my route" onPress={()=>navigation.navigate("Map Screen")}/>
-                  <Button title="My Route" onPress={()=>navigation.navigate("My Route")}/>
                 </View>
               </View>
             </ScrollView>
