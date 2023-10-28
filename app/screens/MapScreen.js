@@ -114,26 +114,37 @@ export default function MapScreen({navigation}) {
     return () => this._unsubscribe();
   }, []);
 
-  const handleGetDirections = (latitude, longitude,loanNo) => {
-    // const scheme = Platform.select({
-    //   ios: "maps:0,0?q=",
-    //   android: "geo:0,0?q=",
-    // });
-    // const latLng = `${latitude},${longitude}`;
-    // const label = "Custom Label";
-    // const url = Platform.select({
-    //   ios: `${scheme}${label}@${latLng}`,
-    //   android: `${scheme}${latLng}(${label})`,
-    // });
+  const handleGetDirections = (latitude, longitude, loanNo) => {
+    const newCoordinate = { latitude, longitude, loanNo };
 
-    // Linking.openURL(url);
+    
+    if (pathCoordinates.length > 0) {
+      // Check if the last element in pathCoordinates is the same as the newCoordinate
+      if (
+        pathCoordinates[pathCoordinates.length - 1].latitude === latitude &&
+        pathCoordinates[pathCoordinates.length - 1].longitude === longitude
+      ) {
+        // Remove the polyline and subsequent coordinates
+        setPathCoordinates((prevCoordinates) => {
+          // Find the index of the element that needs to be removed
+          const index = prevCoordinates.findIndex(
+            (coord) =>
+              coord.latitude === latitude && coord.longitude === longitude
+          );
+          // If the index is found, remove all elements after that index
+          if (index !== -1) {
+            return prevCoordinates.slice(0, index);
+          }
+          return prevCoordinates;
+        });
+        return;
+      }
+    }
 
-    const newCoordinate = { latitude, longitude,loanNo };
-    setPathCoordinates((prevCoordinates) => [
-      ...prevCoordinates,
-      newCoordinate,
-    ]);
+    // If the polyline and subsequent coordinates are not removed, add the new coordinate
+    setPathCoordinates((prevCoordinates) => [...prevCoordinates, newCoordinate]);
 
+    // Calculate the total distance
     if (latitude && longitude && pathCoordinates.length > 0) {
       const lastCoordinate = pathCoordinates[pathCoordinates.length - 1];
       const distanceFromLastPoint = calculateDistance(
@@ -142,33 +153,22 @@ export default function MapScreen({navigation}) {
         latitude,
         longitude
       );
-      const totalDistanceFromStart = pathCoordinates.reduce(
-        (total, coord, index) => {
-          if (index === 0) {
-            return (
-              total +
-              calculateDistance(
-                latitude,
-                longitude,
-                coord.latitude,
-                coord.longitude
-              )
-            );
-          } else {
-            const prevCoord = pathCoordinates[index - 1];
-            return (
-              total +
-              calculateDistance(
-                prevCoord.latitude,
-                prevCoord.longitude,
-                coord.latitude,
-                coord.longitude
-              )
-            );
-          }
-        },
-        0
-      );
+      const totalDistanceFromStart = pathCoordinates.reduce((total, coord, index) => {
+        if (index === 0) {
+          return total + calculateDistance(latitude, longitude, coord.latitude, coord.longitude);
+        } else {
+          const prevCoord = pathCoordinates[index - 1];
+          return (
+            total +
+            calculateDistance(
+              prevCoord.latitude,
+              prevCoord.longitude,
+              coord.latitude,
+              coord.longitude
+            )
+          );
+        }
+      }, 0);
 
       setTotalDistance(totalDistanceFromStart + distanceFromLastPoint);
     }
