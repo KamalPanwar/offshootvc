@@ -14,6 +14,7 @@ import * as Location from "expo-location";
 import { Magnetometer } from "expo-sensors";
 import { ApiContext } from "../context/ApiContext";
 
+
 export default function MapScreen({navigation}) {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -215,13 +216,11 @@ export default function MapScreen({navigation}) {
                 : 0,
             pitch: 45,
             altitude: 1000,
-            zoom: 15,
+            zoom: 9,
           }}
         >
-          <Marker
-            coordinate={{ latitude: latitude, longitude: longitude }}
-            title="My Location"
-          >
+          <Marker coordinate={{ latitude: latitude, longitude: longitude }} title="My Location" showCallout >
+          
             <Callout>
               <View>
                 <Text>You are here</Text>
@@ -234,9 +233,11 @@ export default function MapScreen({navigation}) {
               coordinate={{ latitude: e.latitude, longitude: e.longitude }}
               pinColor={"blue"}
               onPress={() => handleGetDirections(e.latitude, e.longitude,e.loanNo)}
+              
             >
-              <Callout style={styles.calloutContainer}>
+              <Callout style={styles.calloutContainer} >
                 <View style={styles.callout}>
+                  
                   <Text style={styles.calloutText}>{e.name}</Text>
                   <Text style={styles.calloutText}>{e.loanNo}</Text>
                   {latitude && longitude && (
@@ -302,7 +303,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: "100%",
-    height: "90%",
+    height: "100%",
   },
   calloutContainer: {
     position: "absolute",
