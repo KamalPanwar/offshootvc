@@ -21,6 +21,7 @@ const MyRoute = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {listData.length>0 ? <>
       {listData.map((item, index) => {
         return (
           <View key={index} style={styles.mainCard}>
@@ -45,6 +46,10 @@ const MyRoute = ({ route }) => {
           </View>
         );
       })}
+      </>
+      : <View>
+        <Text style={{fontSize:24,fontWeight:700}}>No Route, Please Make First</Text>
+        </View>}
     </SafeAreaView>
   );
 };
