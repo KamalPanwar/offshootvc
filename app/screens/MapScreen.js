@@ -6,7 +6,7 @@ import {
   View,
   SafeAreaView,
   Platform,
-  Linking,
+  TouchableOpacity,
   Button,
 } from "react-native";
 import MapView, { Marker, Callout, Polyline } from "react-native-maps";
@@ -29,7 +29,7 @@ export default function MapScreen({ navigation }) {
   const CustomPathMarker = ({ index }) => {
     return (
       <View style={styles.customPathMarker}>
-        <Text style={styles.pathMarkerText}>{index+1}</Text>
+        <Text style={styles.pathMarkerText}>{index + 1}</Text>
       </View>
     );
   };
@@ -216,7 +216,7 @@ export default function MapScreen({ navigation }) {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <Button title="Make route" onPress={handleMakeRoute} />
+     
       {latitude && longitude && (
         <MapView
           style={styles.map}
@@ -236,7 +236,7 @@ export default function MapScreen({ navigation }) {
                 : 0,
             pitch: 45,
             altitude: 1000,
-            zoom: 9,
+            zoom: 10,
           }}
         >
           <Marker
@@ -327,6 +327,22 @@ export default function MapScreen({ navigation }) {
           km
         </Text>
       </View>
+      <View style={{alignSelf: "flex-end",height:50}}>
+      <View
+        style={{
+          // alignSelf: "flex-end",
+          width:"100%",
+          padding: 10,
+          margin: 5,
+          backgroundColor: "#ff5f5f",
+          borderRadius: 5,
+        }}
+      >
+        <TouchableOpacity onPress={handleMakeRoute}>
+          <Text style={{ color: "white" }}>Make Route</Text>
+        </TouchableOpacity>
+      </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -340,7 +356,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: "100%",
-    height: "100%",
+    height: "90%",
   },
   calloutContainer: {
     position: "absolute",
@@ -369,14 +385,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   customPathMarker: {
-    
-    
-    borderColor: 'white',
- 
-    marginBottom:19
+    borderColor: "white",
+
+    marginBottom: 19,
   },
   pathMarkerText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
 });

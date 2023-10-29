@@ -26,7 +26,7 @@ const MyRoute = ({ route }) => {
           <View key={index} style={styles.mainCard}>
             <View style={styles.indexContainer}>
 
-            <Text style={{fontSize:30,color:"red"}}>{index}</Text>
+            <Text style={{fontSize:30,color:"red"}}>{index+1}.</Text>
             </View>
             <View>
               <Text>
