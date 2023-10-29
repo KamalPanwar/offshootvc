@@ -14,8 +14,7 @@ import * as Location from "expo-location";
 import { Magnetometer } from "expo-sensors";
 import { ApiContext } from "../context/ApiContext";
 
-
-export default function MapScreen({navigation}) {
+export default function MapScreen({ navigation }) {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -26,6 +25,14 @@ export default function MapScreen({navigation}) {
   const [totalDistance, setTotalDistance] = useState(0);
 
   const response = useContext(ApiContext);
+
+  const CustomPathMarker = ({ index }) => {
+    return (
+      <View style={styles.customPathMarker}>
+        <Text style={styles.pathMarkerText}>{index+1}</Text>
+      </View>
+    );
+  };
 
   function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; // Radius of the Earth in kilometers
@@ -118,7 +125,6 @@ export default function MapScreen({navigation}) {
   const handleGetDirections = (latitude, longitude, loanNo) => {
     const newCoordinate = { latitude, longitude, loanNo };
 
-    
     if (pathCoordinates.length > 0) {
       // Check if the last element in pathCoordinates is the same as the newCoordinate
       if (
@@ -143,7 +149,10 @@ export default function MapScreen({navigation}) {
     }
 
     // If the polyline and subsequent coordinates are not removed, add the new coordinate
-    setPathCoordinates((prevCoordinates) => [...prevCoordinates, newCoordinate]);
+    setPathCoordinates((prevCoordinates) => [
+      ...prevCoordinates,
+      newCoordinate,
+    ]);
 
     // Calculate the total distance
     if (latitude && longitude && pathCoordinates.length > 0) {
@@ -154,22 +163,33 @@ export default function MapScreen({navigation}) {
         latitude,
         longitude
       );
-      const totalDistanceFromStart = pathCoordinates.reduce((total, coord, index) => {
-        if (index === 0) {
-          return total + calculateDistance(latitude, longitude, coord.latitude, coord.longitude);
-        } else {
-          const prevCoord = pathCoordinates[index - 1];
-          return (
-            total +
-            calculateDistance(
-              prevCoord.latitude,
-              prevCoord.longitude,
-              coord.latitude,
-              coord.longitude
-            )
-          );
-        }
-      }, 0);
+      const totalDistanceFromStart = pathCoordinates.reduce(
+        (total, coord, index) => {
+          if (index === 0) {
+            return (
+              total +
+              calculateDistance(
+                latitude,
+                longitude,
+                coord.latitude,
+                coord.longitude
+              )
+            );
+          } else {
+            const prevCoord = pathCoordinates[index - 1];
+            return (
+              total +
+              calculateDistance(
+                prevCoord.latitude,
+                prevCoord.longitude,
+                coord.latitude,
+                coord.longitude
+              )
+            );
+          }
+        },
+        0
+      );
 
       setTotalDistance(totalDistanceFromStart + distanceFromLastPoint);
     }
@@ -191,12 +211,12 @@ export default function MapScreen({navigation}) {
     );
   }
 
-  function handleMakeRoute(){
-    navigation.navigate("My Route",{myRoute:pathCoordinates})
+  function handleMakeRoute() {
+    navigation.navigate("My Route", { myRoute: pathCoordinates });
   }
   return (
     <SafeAreaView style={styles.container}>
-      <Button title="Make route"  onPress={handleMakeRoute}/>
+      <Button title="Make route" onPress={handleMakeRoute} />
       {latitude && longitude && (
         <MapView
           style={styles.map}
@@ -219,8 +239,11 @@ export default function MapScreen({navigation}) {
             zoom: 9,
           }}
         >
-          <Marker coordinate={{ latitude: latitude, longitude: longitude }} title="My Location" showCallout >
-          
+          <Marker
+            coordinate={{ latitude: latitude, longitude: longitude }}
+            title="My Location"
+            showCallout
+          >
             <Callout>
               <View>
                 <Text>You are here</Text>
@@ -232,12 +255,12 @@ export default function MapScreen({navigation}) {
               key={index}
               coordinate={{ latitude: e.latitude, longitude: e.longitude }}
               pinColor={"blue"}
-              onPress={() => handleGetDirections(e.latitude, e.longitude,e.loanNo)}
-              
+              onPress={() =>
+                handleGetDirections(e.latitude, e.longitude, e.loanNo)
+              }
             >
-              <Callout style={styles.calloutContainer} >
+              <Callout style={styles.calloutContainer}>
                 <View style={styles.callout}>
-                  
                   <Text style={styles.calloutText}>{e.name}</Text>
                   <Text style={styles.calloutText}>{e.loanNo}</Text>
                   {latitude && longitude && (
@@ -254,7 +277,9 @@ export default function MapScreen({navigation}) {
                   )}
                   <Text
                     style={styles.calloutText}
-                    onPress={() => handleGetDirections(e.latitude, e.longitude,e.loanNo)}
+                    onPress={() =>
+                      handleGetDirections(e.latitude, e.longitude, e.loanNo)
+                    }
                   >
                     Get Directions
                   </Text>
@@ -262,6 +287,18 @@ export default function MapScreen({navigation}) {
               </Callout>
             </Marker>
           ))}
+          {pathCoordinates.length > 0 &&
+            pathCoordinates.map((coordinate, index) => (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: coordinate.latitude,
+                  longitude: coordinate.longitude,
+                }}
+              >
+                <CustomPathMarker index={index} />
+              </Marker>
+            ))}
           {pathCoordinates.length > 0 && (
             <Polyline
               coordinates={[
@@ -330,5 +367,16 @@ const styles = StyleSheet.create({
   distanceText: {
     color: "black",
     fontWeight: "bold",
+  },
+  customPathMarker: {
+    
+    
+    borderColor: 'white',
+ 
+    marginBottom:19
+  },
+  pathMarkerText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
